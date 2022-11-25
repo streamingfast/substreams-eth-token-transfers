@@ -1,3 +1,3 @@
-#[path = "eth.erc721.v1.rs"]
+#[path = "eth.token.transfers.v1.rs"]
 #[allow(dead_code)]
-pub mod erc721;
+pub mod transfers;

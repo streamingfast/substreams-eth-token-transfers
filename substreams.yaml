@@ -1,11 +1,11 @@
 specVersion: v0.1.0
 package:
-  name: "substreams_template"
+  name: "substreams_eth_token_transfers"
   version: v0.1.0
 
 protobuf:
   files:
-    - erc721.proto
+    - transfers.proto
   importPaths:
     - ./proto
 
@@ -17,16 +17,8 @@ binaries:
 modules:
   - name: map_transfers
     kind: map
-    initialBlock: 12287507
+    initialBlock: 0
     inputs:
       - source: sf.ethereum.type.v2.Block
     output:
-      type: proto:eth.erc721.v1.Transfers
-
-  - name: store_transfers
-    kind: store
-    initialBlock: 12287507
-    updatePolicy: add
-    valueType: int64
-    inputs:
-      - map: map_transfers
+      type: proto:eth.token.transfers.v1.Transfers

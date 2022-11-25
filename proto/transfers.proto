@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package eth.token.transfers.v1;
+
+message Transfers {
+  repeated Transfer transfers = 1;
+}
+
+message Transfer {
+  oneof transfer {
+    ERC20Transfer erc20 = 1;
+    ERC721Transfer erc721 = 2;
+    ERC1155Transfer erc1155 = 3;
+  }
+}
+
+message ERC20Transfer {
+  string from = 1;
+  string to = 2;
+  string value = 3;
+  string trx_hash = 4;
+  uint64 log_index = 5;
+}
+
+message ERC721Transfer {
+  string from = 1;
+  string to = 2;
+  string token_id = 3;
+  string trx_hash = 4;
+  uint64 log_index = 5;
+}
+
+message ERC1155Transfer {
+  string operator = 1;
+  string from = 2;
+  string to = 3;
+  string token_id = 4;
+  string value = 5;
+  string trx_hash = 6;
+  uint64 log_index = 7;
+}

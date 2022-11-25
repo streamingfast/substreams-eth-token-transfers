@@ -721,6 +721,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "substreams-eth-token-transfers"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "ethabi",
+ "getrandom",
+ "hex-literal",
+ "prost",
+ "substreams",
+ "substreams-ethereum",
+]
+
+[[package]]
 name = "substreams-ethereum"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -791,19 +804,6 @@ dependencies = [
  "quote",
  "syn",
  "thiserror",
-]
-
-[[package]]
-name = "substreams-template"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "ethabi",
- "getrandom",
- "hex-literal",
- "prost",
- "substreams",
- "substreams-ethereum",
 ]
 
 [[package]]
