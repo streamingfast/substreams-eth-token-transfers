@@ -7,35 +7,41 @@ message Transfers {
 }
 
 message Transfer {
-  oneof transfer {
-    ERC20Transfer erc20 = 1;
-    ERC721Transfer erc721 = 2;
-    ERC1155Transfer erc1155 = 3;
+  enum Schema {
+    erc20 = 0;
+    erc721 = 1;
+    erc1155 = 2;
   }
-}
 
-message ERC20Transfer {
-  string from = 1;
-  string to = 2;
-  string value = 3;
-  string trx_hash = 4;
-  uint64 log_index = 5;
-}
+  // Schema is the string representation of one of the enum defined in Schema. We use it as a String
+  // here because Rust code uses a `u32` for its representation but it's nicer for the file format
+  // to have the type as a string.
+  string schema = 1;
 
-message ERC721Transfer {
-  string from = 1;
-  string to = 2;
-  string token_id = 3;
-  string trx_hash = 4;
-  uint64 log_index = 5;
-}
+  // The transaction hash that generated that transfer.
+  string trx_hash = 2;
 
-message ERC1155Transfer {
-  string operator = 1;
-  string from = 2;
-  string to = 3;
-  string token_id = 4;
-  string value = 5;
-  string trx_hash = 6;
-  uint64 log_index = 7;
+  // The index of the log within the transaction's receipts of the block.
+  uint64 log_index = 3;
+
+  // The person that received the transfer, might not be the same as the one that did initiated the
+  // transaction.
+  string from = 4;
+
+  // The person that received the transfer.
+  string to = 5;
+
+  // How many token were transferred in this transfer, will always be 1 in the case of ERC721.
+  string quantity = 6;
+
+  // Operator is the "sender" of the actual transaction that initiated the transfer, it's equal to
+  // `msg.sender` within the smart contract. This will be different than `from` in case of `Approval`
+  // for example. Only available if `schema = ERC1155`, for `ERC20` and `ERC721`, this will be the empty
+  // string "".
+  string operator = 8;
+
+  // TokenID the identifier of the token for which the transfer is happening. Only
+  // available when `schema = ERC721` or `schema = ERC1155`. When `schema = ERC20`, the token id
+  // will be empty string "" as the contract itself is the token identifier.
+  string token_id = 7;
 }
