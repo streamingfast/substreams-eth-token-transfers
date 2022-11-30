@@ -4,6 +4,7 @@ version = "0.2.0"
 description = "Substream Ethereum Token Transfers tracking"
 edition = "2021"
 repository = "https://github.com/streamingfast/substreams-eth-token-transfers"
+license = "Apache-2.0"
 
 [lib]
 name = "substreams"
