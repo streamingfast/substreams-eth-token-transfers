@@ -1,11 +1,12 @@
 specVersion: v0.1.0
 package:
   name: "substreams_eth_token_transfers"
-  version: v0.2.0
+  version: v0.3.0
 
 protobuf:
   files:
     - transfers.proto
+    - filesink.proto
   importPaths:
     - ./proto
 
@@ -22,3 +23,13 @@ modules:
       - source: sf.ethereum.type.v2.Block
     output:
       type: proto:eth.token.transfers.v1.Transfers
+
+
+  - name: map_json_transfers
+    kind: map
+    initialBlock: 0
+    inputs:
+      - source: sf.ethereum.type.v2.Block
+    output:
+      type: proto:eth.token.transfers.v1.Lines
+

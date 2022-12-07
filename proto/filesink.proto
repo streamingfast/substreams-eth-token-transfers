@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package eth.filesink.v1;
+
+message Lines {
+    repeated bytes lines = 1;
+}

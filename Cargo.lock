@@ -723,13 +723,14 @@ dependencies = [
 
 [[package]]
 name = "substreams-eth-token-transfers"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "ethabi",
  "getrandom",
  "hex-literal",
  "prost",
+ "serde_json",
  "substreams",
  "substreams-ethereum",
 ]

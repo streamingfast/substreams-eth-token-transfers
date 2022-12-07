@@ -7,7 +7,7 @@ build:
 
 .PHONY: stream
 stream: build
-	substreams run -e $(ENDPOINT) substreams.yaml map_transfers -s 12292922 -t +10
+	substreams run -e $(ENDPOINT) substreams.yaml map_json_transfers -s 12292922 -t +10
 
 .PHONY: codegen
 codegen:
