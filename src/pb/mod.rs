@@ -2,7 +2,6 @@
 #[allow(dead_code)]
 pub mod transfers;
 
-
-#[path = "eth.filesink.v1.rs"]
+#[path = "substreams.sink.files.v1.rs"]
 #[allow(dead_code)]
-pub mod filesink;
+pub mod sinkfiles;

@@ -1,11 +1,10 @@
 mod abi;
 mod pb;
 
-use substreams::handlers::map;
 use serde_json::json;
 
-use pb::filesink::{Lines};
-use pb::transfers::{transfer::Schema, Transfer, Transfers };
+use pb::sinkfiles::Lines;
+use pb::transfers::{transfer::Schema, Transfer, Transfers};
 use substreams::log;
 use substreams::scalar::BigInt;
 use substreams::Hex;
@@ -30,25 +29,28 @@ fn map_transfers(blk: eth::Block) -> Result<Transfers, substreams::errors::Error
 #[substreams::handlers::map]
 fn map_json_transfers(blk: eth::Block) -> Result<Lines, substreams::errors::Error> {
     let transfers = get_transfers(blk);
-    let lines : Vec<_> = transfers.iter().map(|trx| {
-        json!({
-            "schema": trx.schema,
-            "from": trx.from,
-            "to": trx.to,
-            "quantity": trx.quantity,
-            "trx_hash": trx.trx_hash,
-            "log_index": trx.log_index,
-            "operator": trx.operator,
-            "token_id": trx.token_id,
-        }).to_string().into_bytes()
-    }).collect();
+    let lines: Vec<_> = transfers
+        .iter()
+        .map(|trx| {
+            json!({
+                "schema": trx.schema,
+                "from": trx.from,
+                "to": trx.to,
+                "quantity": trx.quantity,
+                "trx_hash": trx.trx_hash,
+                "log_index": trx.log_index,
+                "operator": trx.operator,
+                "token_id": trx.token_id,
+            })
+            .to_string()
+        })
+        .collect();
 
-    Ok(pb::filesink::Lines { lines })
+    Ok(pb::sinkfiles::Lines { lines })
 }
 
 fn get_transfers(blk: eth::Block) -> Vec<Transfer> {
-    blk
-        .receipts()
+    blk.receipts()
         .flat_map(|receipt| {
             let hash = &receipt.transaction.hash;
 
@@ -74,10 +76,6 @@ fn get_transfers(blk: eth::Block) -> Vec<Transfer> {
         })
         .collect()
 }
-
-
-
-
 
 fn new_erc20_transfer(hash: &[u8], log_index: u32, event: ERC20TransferEvent) -> Transfer {
     Transfer {
