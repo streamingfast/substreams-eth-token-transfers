@@ -5,9 +5,14 @@ ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 build:
 	cargo build --target wasm32-unknown-unknown --release
 
-.PHONY: stream
-stream: build
-	substreams run -e $(ENDPOINT) substreams.yaml map_json_transfers -s 12292922 -t +10
+.PHONY: stream_csv
+stream_csv: build
+	substreams run -e $(ENDPOINT) substreams.yaml csv_out -s 12292922 -t +10
+
+.PHONY: stream_jsonl
+stream_jsonl: build
+	substreams run -e $(ENDPOINT) substreams.yaml jsonl_out -s 12292922 -t +10
+
 
 .PHONY: codegen
 codegen:

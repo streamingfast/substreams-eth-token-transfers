@@ -11,11 +11,13 @@ name = "substreams"
 crate-type = ["cdylib"]
 
 [dependencies]
+csv = "1.1"
 ethabi = "17"
 hex-literal = "0.3.4"
 prost = "0.11"
 substreams = "0.5"
 substreams-ethereum = "0.8"
+serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 
 # Required so that ethabi > ethereum-types build correctly under wasm32-unknown-unknown

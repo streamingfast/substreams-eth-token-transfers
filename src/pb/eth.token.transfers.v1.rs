@@ -4,6 +4,7 @@ pub struct Transfers {
     #[prost(message, repeated, tag="1")]
     pub transfers: ::prost::alloc::vec::Vec<Transfer>,
 }
+#[derive(::serde::Serialize)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Transfer {
     /// Schema is the string representation of one of the enum defined in Schema. We use it as a String
@@ -41,6 +42,7 @@ pub struct Transfer {
 }
 /// Nested message and enum types in `Transfer`.
 pub mod transfer {
+    #[derive(::serde::Serialize)]
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
     #[repr(i32)]
     pub enum Schema {

@@ -26,7 +26,7 @@ modules:
     output:
       type: proto:eth.token.transfers.v1.Transfers
 
-  - name: map_json_transfers
+  - name: jsonl_out
     kind: map
     initialBlock: 0
     inputs:
@@ -34,3 +34,10 @@ modules:
     output:
       type: proto:substreams.sink.files.v1.Lines
 
+  - name: csv_out
+    kind: map
+    initialBlock: 0
+    inputs:
+      - source: sf.ethereum.type.v2.Block
+    output:
+      type: proto:substreams.sink.files.v1.Lines

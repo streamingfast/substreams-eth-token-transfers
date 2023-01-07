@@ -1,10 +1,11 @@
 mod abi;
 mod pb;
 
-use serde_json::json;
-
 use pb::sinkfiles::Lines;
-use pb::transfers::{transfer::Schema, Transfer, Transfers};
+use pb::transfers::transfer::Schema;
+use pb::transfers::Transfer;
+use pb::transfers::Transfers;
+
 use substreams::log;
 use substreams::scalar::BigInt;
 use substreams::Hex;
@@ -21,60 +22,53 @@ substreams_ethereum::init!();
 /// Extracts transfers events from the contract(s)
 #[substreams::handlers::map]
 fn map_transfers(blk: eth::Block) -> Result<Transfers, substreams::errors::Error> {
-    let transfers = get_transfers(blk);
-    Ok(pb::transfers::Transfers { transfers })
+    Ok(Transfers {
+        transfers: get_transfers(&blk).collect(),
+    })
 }
 
 /// Extracts transfers events from the contract(s)
 #[substreams::handlers::map]
-fn map_json_transfers(blk: eth::Block) -> Result<Lines, substreams::errors::Error> {
-    let transfers = get_transfers(blk);
-    let lines: Vec<_> = transfers
-        .iter()
-        .map(|trx| {
-            json!({
-                "schema": trx.schema,
-                "from": trx.from,
-                "to": trx.to,
-                "quantity": trx.quantity,
-                "trx_hash": trx.trx_hash,
-                "log_index": trx.log_index,
-                "operator": trx.operator,
-                "token_id": trx.token_id,
-            })
-            .to_string()
-        })
-        .collect();
-
-    Ok(pb::sinkfiles::Lines { lines })
+fn jsonl_out(blk: eth::Block) -> Result<Lines, substreams::errors::Error> {
+    Ok(Lines {
+        lines: get_transfers(&blk)
+            .map(|trx| serde_json::to_string(&trx).unwrap())
+            .collect(),
+    })
 }
 
-fn get_transfers(blk: eth::Block) -> Vec<Transfer> {
-    blk.receipts()
-        .flat_map(|receipt| {
-            let hash = &receipt.transaction.hash;
+/// Extracts transfers events from the contract(s)
+#[substreams::handlers::map]
+fn csv_out(blk: eth::Block) -> Result<Lines, substreams::errors::Error> {
+    Ok(Lines {
+        lines: get_transfers(&blk).map(|trx| trx.to_csv()).collect(),
+    })
+}
 
-            receipt.receipt.logs.iter().flat_map(|log| {
-                if let Some(event) = ERC20TransferEvent::match_and_decode(log) {
-                    return vec![new_erc20_transfer(hash, log.block_index, event)];
-                }
+fn get_transfers<'a>(blk: &'a eth::Block) -> impl Iterator<Item = Transfer> + 'a {
+    blk.receipts().flat_map(|receipt| {
+        let hash = &receipt.transaction.hash;
 
-                if let Some(event) = ERC721TransferEvent::match_and_decode(log) {
-                    return vec![new_erc721_transfer(hash, log.block_index, event)];
-                }
+        receipt.receipt.logs.iter().flat_map(|log| {
+            if let Some(event) = ERC20TransferEvent::match_and_decode(log) {
+                return vec![new_erc20_transfer(hash, log.block_index, event)];
+            }
 
-                if let Some(event) = ERC1155TransferSingleEvent::match_and_decode(log) {
-                    return vec![new_erc1155_single_transfer(hash, log.block_index, event)];
-                }
+            if let Some(event) = ERC721TransferEvent::match_and_decode(log) {
+                return vec![new_erc721_transfer(hash, log.block_index, event)];
+            }
 
-                if let Some(event) = ERC1155TransferBatchEvent::match_and_decode(log) {
-                    return new_erc1155_batch_transfer(hash, log.block_index, event);
-                }
+            if let Some(event) = ERC1155TransferSingleEvent::match_and_decode(log) {
+                return vec![new_erc1155_single_transfer(hash, log.block_index, event)];
+            }
 
-                vec![]
-            })
+            if let Some(event) = ERC1155TransferBatchEvent::match_and_decode(log) {
+                return new_erc1155_batch_transfer(hash, log.block_index, event);
+            }
+
+            vec![]
         })
-        .collect()
+    })
 }
 
 fn new_erc20_transfer(hash: &[u8], log_index: u32, event: ERC20TransferEvent) -> Transfer {

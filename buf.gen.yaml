@@ -1,0 +1,8 @@
+version: v1
+plugins:
+  - name: prost
+    out: src/pb
+    opt:
+      - bytes=.
+      - file_descriptor_set=false
+      - type_attribute=.eth.token.transfers.v1.Transfer=#[derive(::serde::Serialize)]
