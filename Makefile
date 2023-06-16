@@ -14,8 +14,8 @@ stream_jsonl: build
 	substreams run -e $(ENDPOINT) substreams.yaml jsonl_out -s 12292922 -t +10
 
 
-.PHONY: codegen
-codegen:
+.PHONY: protogen
+protogen:
 	substreams protogen ./substreams.yaml --exclude-paths="sf/substreams,google"
 
 .PHONY: sink_files

@@ -4,3 +4,5 @@
 /target
 *.spkg
 /sink-files
+/build
+/dist
