@@ -19,4 +19,4 @@ To see the results ready to be consumed by [substreams-sink-files](https://githu
 make stream_csv
 ```
 
-Refer to tutorial in preparation (see [PR](https://github.com/streamingfast/substreams/pull/116/files#diff-4be0ff6a311cd5ce2367726a72be4126ab2f1b5e81292d4dedb097a90393f6ea)) to see how you can leverage [substreams-sink-files](https://github.com/streamingfast/substreams-sink-files) to consume this Substreams and have those files written to your computer.
+Refer to tutorial https://substreams.streamingfast.io/developers-guide/sink-targets/substreams-sink-files to see how you can leverage [substreams-sink-files](https://github.com/streamingfast/substreams-sink-files) to consume this Substreams and have those files written to your computer.
